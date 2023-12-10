@@ -1,0 +1,222 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+
+    <head> 
+        <meta charset="utf-8"> 
+        <title>Driver Management</title> 
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> 
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'driverManagement/css/style.css' %}" />
+
+        <!-- {% load static %}
+        <script src="{% static 'driverManagement/js/jquery.js' %}"></script> -->
+
+    </head> 
+
+    <body> 
+        <div class="container">
+            <div class="header">
+                <div class="title">
+                        <h1>Hitachi Digital Service Fleet Management System</h1> 
+                </div>
+               
+                <div class="logo">
+                    <img src="{% static 'driverManagement/image/logo.png' %}"/>
+                </div>
+            </div>
+        
+            <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'liveScreen')">Live Screen</button>
+            <button class="tablinks" onclick="openTab(event, 'vehicleManagement')">Vehicle Management</button>
+            <button class="tablinks" onclick="openTab(event, 'driverManagement')">Driver Management</button>
+            </div>
+        
+            <div id="liveScreen" class="tabcontent">
+
+                <div class="search">
+                    <input type="text" id="search" name="search" />
+                    <input type="submit" name="search" value="search">
+                </div>
+
+                <div class="datetime">
+                    <span id="datetime"></span>
+                </div>
+
+                <script>
+                    document.getElementById("datetime").innerHTML = Date().toLocaleString();
+                </script>    
+
+                <div class="listDriver">
+                    {% if latest_driverManagement_list %}
+                    
+                    {% for driver in latest_driverManagement_list %}
+                        <ul>
+                            <li class="vehicle">Vehicle {{ driver.id }}</li>
+                            <li>Status :On/Off</li>
+                            <li>Driver Name :{{ driver.driverName }}</li>
+                            <li>Driver Face: </li>
+                            <li>First Log-In Time: {{ driver.firstLogInTime }}</li>
+                            <li>Last Online Time: {{ driver.lastOnlineTime }}</li>
+                            <li>Driving Duration: {{ driver.drivingDuration }}</li>
+                            <li>Number of Drowsiness times: {{ driver.numberOfDrowsiness }}</li>
+                            <li>Number of Distraction times: {{ driver.numberOfRuleViolation }}</li>
+                            <li>Number of PhoneUsage times: {{ driver.numberOfPhoneUsage }}</li>
+                        </ul>
+                    {% endfor %}
+                    
+                {% else %}
+                    <p>No Driver Management list is available</p>
+                {% endif %}
+                </div>
+            </div>
+        
+            <div id="vehicleManagement" class="tabcontent">
+                <h3>Vehicle Management</h3>
+                <p>Paris is the capital of France.</p> 
+            </div>
+        
+            <div id="driverManagement" class="tabcontent">
+                <h3>Driver Management</h3>
+                <p>Tokyo is the capital of Japan.</p>
+            </div>
+        
+            <script>
+                function openTab(evt, screenName) {
+                    var i, tabcontent, tablinks;
+                    tabcontent = document.getElementsByClassName("tabcontent");
+                    for (i = 0; i < tabcontent.length; i++) {
+                        tabcontent[i].style.display = "none";
+                    }
+                    tablinks = document.getElementsByClassName("tablinks");
+                    for (i = 0; i < tablinks.length; i++) {
+                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                    }
+                    document.getElementById(screenName).style.display = "block";
+                    evt.currentTarget.className += " active";
+                }
+            </script>
+        
+        
+        
+        
+        
+        
+            <div class="row"> 
+                <div class="col-md-6"> 
+                <canvas id="myChartline"></canvas> 
+                </div> 
+                <div class="col-md-6"> 
+                <canvas id="myChartBar"></canvas> 
+                </div> 
+            </div> 
+        
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
+        
+            <script> 
+                var endpoint = 'api'; 
+        
+                $.ajax({ 
+                    method: "GET", 
+                    url: endpoint, 
+                    success: function(data) { 
+                        drawLineGraph(data, 'myChartline'); 
+                        drawBarGraph(data, 'myChartBar'); 
+                        console.log("drawing"); 
+                    }, 
+                    error: function(error_data) { 
+                        console.log(error_data); 
+                    } 
+                }) 
+        
+        
+                function drawLineGraph(data, id) { 
+                    var labels = data.labels; 
+                    var chartLabel = data.chartLabel; 
+                    var chartdata = data.chartdata; 
+                    var ctx = document.getElementById(id).getContext('2d'); 
+                    var chart = new Chart(ctx, { 
+                        // The type of chart we want to create 
+                        type: 'line', 
+        
+                        // The data for our dataset 
+                        data: { 
+                        labels: labels, 
+                        datasets: [{ 
+                            label: chartLabel, 
+                            backgroundColor: 'rgb(255, 100, 200)', 
+                            borderColor: 'rgb(55, 99, 132)', 
+                            data: chartdata, 
+                        }] 
+                        }, 
+        
+                        // Configuration options go here 
+                        options: { 
+                            scales: { 
+                                xAxes: [{ 
+                                    display: true 
+                                }], 
+                                yAxes: [{ 
+                                    ticks: { 
+                                        beginAtZero: true 
+                                    } 
+                                }] 
+                            } 
+                        } 
+        
+                    }); 
+                } 
+        
+                function drawBarGraph(data, id) { 
+                    var labels = data.labels; 
+                    var chartLabel = data.chartLabel; 
+                    var chartdata = data.chartdata; 
+                    var ctx = document.getElementById(id).getContext('2d'); 
+                    var myChart = new Chart(ctx, { 
+                        type: 'bar', 
+                        data: { 
+                            labels: labels, 
+                            datasets: [{ 
+                                label: chartLabel, 
+                                data: chartdata, 
+                                backgroundColor: [ 
+                                'rgba(255, 99, 132, 0.2)', 
+                                'rgba(54, 162, 235, 0.2)', 
+                                'rgba(255, 206, 86, 0.2)', 
+                                'rgba(75, 192, 192, 0.2)', 
+                                'rgba(153, 102, 255, 0.2)', 
+                                'rgba(255, 159, 64, 0.2)' 
+                                ], 
+                                borderColor: [ 
+                                'rgba(255, 99, 132, 1)', 
+                                'rgba(54, 162, 235, 1)', 
+                                'rgba(255, 206, 86, 1)', 
+                                'rgba(75, 192, 192, 1)', 
+                                'rgba(153, 102, 255, 1)', 
+                                'rgba(255, 159, 64, 1)' 
+                                ], 
+                                borderWidth: 1 
+                            }] 
+                        }, 
+                        options: { 
+                            scales: { 
+                                yAxes: [{ 
+                                    ticks: { 
+                                        beginAtZero: true 
+                                    } 
+                                }] 
+                            } 
+                        } 
+                    }); 
+                } 
+            </script> 
+        </div>
+    </body> 
+</html> 
