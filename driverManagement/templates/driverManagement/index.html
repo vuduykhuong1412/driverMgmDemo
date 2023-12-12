@@ -16,6 +16,9 @@
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'driverManagement/css/style.css' %}" />
 
+        <!-- Load Font Awesome Icon Library -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
         <!-- {% load static %}
         <script src="{% static 'driverManagement/js/jquery.js' %}"></script> -->
 
@@ -57,36 +60,70 @@
                 <div class="listDriver">
                     {% if latest_driverManagement_list %}
                     
-                    {% for driver in latest_driverManagement_list %}
-                        <ul>
-                            <li class="vehicle">Vehicle {{ driver.id }}</li>
-                            <li>Status :On/Off</li>
-                            <li>Driver Name :{{ driver.driverName }}</li>
-                            <li>Driver Face: </li>
-                            <li>First Log-In Time: {{ driver.firstLogInTime }}</li>
-                            <li>Last Online Time: {{ driver.lastOnlineTime }}</li>
-                            <li>Driving Duration: {{ driver.drivingDuration }}</li>
-                            <li>Number of Drowsiness times: {{ driver.numberOfDrowsiness }}</li>
-                            <li>Number of Distraction times: {{ driver.numberOfRuleViolation }}</li>
-                            <li>Number of PhoneUsage times: {{ driver.numberOfPhoneUsage }}</li>
-                        </ul>
-                    {% endfor %}
+                        {% for driver in latest_driverManagement_list %}
+                            <div class="column">
+                                <div class="vehicle">Vehicle {{ driver.id }}</div>
+                                <div>Status :On/Off</div>
+                                <div>Driver Name :{{ driver.driverName }}</div>
+                                <div>Driver Face: </div>
+                                <div>First Log-In Time: {{ driver.firstLogInTime }}</div>
+                                <div>Last Online Time: {{ driver.lastOnlineTime }}</div>
+                                <div>Driving Duration: {{ driver.drivingDuration }}</div>
+                                <div>Number of Drowsiness times: {{ driver.numberOfDrowsiness }}</div>
+                                <div>Number of Distraction times: {{ driver.numberOfRuleViolation }}</div>
+                                <div>Number of PhoneUsage times: {{ driver.numberOfPhoneUsage }}</div>
+                            </div>
+                        {% endfor %}
                     
-                {% else %}
-                    <p>No Driver Management list is available</p>
-                {% endif %}
+                    {% else %}
+                        <p>No Driver Management list is available</p>
+                    {% endif %}
                 </div>
             </div>
+
+
+            <script>
+                // Get the elements with class="column"
+                var elements = document.getElementsByClassName("column");
+                //var elements = document.getElementsByTagName("ul");
+
+                // Declare a loop variable
+                var i;
+
+                // List View
+                function listView() {
+                    for (i = 0; i < elements.length; i++) {
+                        elements[i].style.width = "100%";
+                    }
+                }
+
+                // Grid View
+                function gridView() {
+                    for (i = 0; i < elements.length; i++) {
+                        elements[i].style.width = "50%";
+                    }
+                } 
+            </script>
+
+            <!-- Buttons to choose list or grid view -->
+            <button onclick="listView()"><i class="fa fa-bars"></i> List</button>
+            <button onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+
+
+
+
+
+
         
-            <div id="vehicleManagement" class="tabcontent">
-                <h3>Vehicle Management</h3>
-                <p>Paris is the capital of France.</p> 
-            </div>
-        
-            <div id="driverManagement" class="tabcontent">
-                <h3>Driver Management</h3>
-                <p>Tokyo is the capital of Japan.</p>
-            </div>
+        <div id="vehicleManagement" class="tabcontent">
+            <h3>Vehicle Management</h3>
+            <p>Paris is the capital of France.</p> 
+        </div>
+    
+        <div id="driverManagement" class="tabcontent">
+            <h3>Driver Management</h3>
+            <p>Tokyo is the capital of Japan.</p>
+        </div>
         
             <script>
                 function openTab(evt, screenName) {
